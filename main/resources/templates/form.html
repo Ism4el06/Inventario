@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <title>Formulario de Camiseta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --verde-oscuro: #0a1f0a;
+            --verde-medio: #122912;
+            --verde-neon: #00e676;
+            --dorado: #ffd700;
+            --texto: #e8f5e9;
+        }
+
+        body {
+            background-color: var(--verde-oscuro);
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px),
+                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px);
+            color: var(--texto);
+            font-family: 'Barlow', sans-serif;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 3px;
+            color: var(--verde-neon);
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+        }
+
+        .form-label {
+            color: var(--verde-neon);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control, .form-select, select.form-control {
+            background-color: #122912;
+            border: 1px solid #2e7d32;
+            color: var(--texto);
+            border-radius: 6px;
+        }
+
+        .form-control:focus, select.form-control:focus {
+            background-color: #1a3d1a;
+            border-color: var(--verde-neon);
+            color: #fff;
+            box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: #4caf50;
+            opacity: 0.6;
+        }
+
+        select.form-control option {
+            background-color: #122912;
+        }
+
+        .btn-success {
+            background-color: var(--verde-neon);
+            border: none;
+            color: #000;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+
+        .card-form {
+            background-color: #122912;
+            border: 1px solid #2e7d32;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid #2e7d32;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4" th:text="${camiseta.id == null ? 'Nueva Camiseta' : 'Editar Camiseta'}"></h1>
+
+    <div class="card-form">
+        <form th:action="@{/camisetas/save}" th:object="${camiseta}" method="post" class="row g-3">
+            <input type="hidden" th:field="*{id}">
+
+            <div class="col-md-6">
+                <label class="form-label">Equipo</label>
+                <input type="text" th:field="*{equipo}" class="form-control" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Liga</label>
+                <select th:field="*{liga}" class="form-control" required>
+                    <option value="Premier League">Premier League</option>
+                    <option value="La Liga">La Liga</option>
+                    <option value="Serie A">Serie A</option>
+                    <option value="Otras">Otras</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Tipo</label>
+                <input type="text" th:field="*{tipo}" class="form-control" placeholder="Local, Visitante..." required>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Color</label>
+                <input type="text" th:field="*{color}" class="form-control" required>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Precio</label>
+                <input type="number" step="0.01" th:field="*{precio}" class="form-control" required>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">Stock</label>
+                <input type="number" th:field="*{stock}" class="form-control" required>
+            </div>
+
+            <!-- ← NUEVO -->
+            <div class="col-md-12">
+                <label class="form-label">URL de la Imagen</label>
+                <input type="text" th:field="*{imagenUrl}" class="form-control"
+                       placeholder="/img/ac-milan-local.png"
+                       id="inputImagen" oninput="previewImagen(this.value)">
+                <img id="previewImg" class="preview-img"
+                     th:if="${camiseta.imagenUrl != null and !#strings.isEmpty(camiseta.imagenUrl)}"
+                     th:src="${camiseta.imagenUrl}" alt="Preview">
+            </div>
+
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-success">Guardar</button>
+                <a th:href="@{/camisetas}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function previewImagen(url) {
+            const img = document.getElementById('previewImg');
+            if (url) {
+                img.src = url;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <title>Inventario de Camisetas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --verde-oscuro: #0a1f0a;
+            --verde-medio: #122912;
+            --verde-neon: #00e676;
+            --dorado: #ffd700;
+            --texto: #e8f5e9;
+        }
+
+        body {
+            background-color: var(--verde-oscuro);
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px),
+                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px);
+            color: var(--texto);
+            font-family: 'Barlow', sans-serif;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 3px;
+            color: var(--verde-neon);
+            text-shadow: 0 0 20px rgba(0, 230, 118, 0.4);
+        }
+
+        .btn-primary {
+            background-color: var(--verde-neon);
+            border: none;
+            color: #000;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+            font-size: 1rem;
+            padding: 8px 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #00c853;
+            color: #000;
+        }
+
+        .card {
+            background-color: var(--verde-medio);
+            border: 1px solid #2e7d32;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 230, 118, 0.2);
+            border-color: var(--verde-neon);
+        }
+
+        .card-img-top {
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            background-color: #fff;
+            padding: 16px;
+        }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 220px;
+            background-color: #1a3d1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .card-liga {
+            display: inline-block;
+            background: var(--dorado);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .card-precio {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            color: var(--verde-neon);
+            letter-spacing: 1px;
+        }
+
+        .card-info {
+            font-size: 0.85rem;
+            color: #81c784;
+            margin-bottom: 4px;
+        }
+
+        .card-stock {
+            font-size: 0.8rem;
+            color: #4caf50;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-warning { font-size: 0.8rem; flex: 1; }
+        .btn-danger  { font-size: 0.8rem; flex: 1; }
+    </style>
+</head>
+<body class="container mt-5">
+    <h1 class="mb-2">Inventario de Camisetas de Fútbol</h1>
+    <a th:href="@{/camisetas/new}" class="btn btn-primary mb-4">+ Agregar Nueva Camiseta</a>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="col" th:each="c : ${camisetas}">
+            <div class="card h-100">
+
+                <img th:if="${c.imagenUrl != null and !#strings.isEmpty(c.imagenUrl)}"
+                     th:src="${c.imagenUrl}"
+                     class="card-img-top"
+                     alt="Camiseta">
+
+                <div th:unless="${c.imagenUrl != null and !#strings.isEmpty(c.imagenUrl)}"
+                     class="card-img-placeholder">⚽</div>
+
+                <div class="card-body">
+                    <div class="card-title" th:text="${c.equipo}"></div>
+                    <span class="card-liga" th:text="${c.liga}"></span>
+                    <div class="card-info" th:text="${c.tipo} + ' · ' + ${c.color}"></div>
+                    <div class="card-precio" th:text="'$ ' + ${c.precio}"></div>
+                    <div class="card-stock" th:text="'Stock: ' + ${c.stock} + ' unidades'"></div>
+                    <div class="card-actions">
+                        <a th:href="@{/camisetas/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/camisetas/delete/{id}(id=${c.id})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro?')">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
