@@ -29,4 +29,4 @@ El sistema viene precargado con camisetas de los siguientes equipos:
 5.  Abre tu navegador y accede a: `http://localhost:8080/camisetas`.
 
 ## Autor del proyecto
-Ismael Quishpe]
+Ismael Quishpe
