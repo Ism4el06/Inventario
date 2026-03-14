@@ -1,0 +1,5 @@
+com\example\futbol\service\CamisetaService.class
+com\example\futbol\FutbolApplication.class
+com\example\futbol\controller\CamisetaController.class
+com\example\futbol\model\Camiseta.class
+com\example\futbol\repository\CamisetaRepository.class
